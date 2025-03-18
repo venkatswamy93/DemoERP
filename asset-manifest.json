@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/venkatswamy93/DemoERP.git/static/css/main.f855e6bc.css",
+    "main.js": "/venkatswamy93/DemoERP.git/static/js/main.b23eed81.js",
+    "static/js/453.71c34939.chunk.js": "/venkatswamy93/DemoERP.git/static/js/453.71c34939.chunk.js",
+    "static/media/logo.svg": "/venkatswamy93/DemoERP.git/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/venkatswamy93/DemoERP.git/index.html",
+    "main.f855e6bc.css.map": "/venkatswamy93/DemoERP.git/static/css/main.f855e6bc.css.map",
+    "main.b23eed81.js.map": "/venkatswamy93/DemoERP.git/static/js/main.b23eed81.js.map",
+    "453.71c34939.chunk.js.map": "/venkatswamy93/DemoERP.git/static/js/453.71c34939.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.b23eed81.js"
+  ]
+}
