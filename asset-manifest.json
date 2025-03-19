@@ -1,16 +1,21 @@
 {
   "files": {
-    "main.css": "/DemoERP/static/css/main.f855e6bc.css",
-    "main.js": "/DemoERP/static/js/main.fd867586.js",
-    "static/js/453.71c34939.chunk.js": "/DemoERP/static/js/453.71c34939.chunk.js",
+    "main.css": "/DemoERP/static/css/main.473f8cb1.css",
+    "main.js": "/DemoERP/static/js/main.b4d01d56.js",
+    "static/js/239.cce6fc9b.chunk.js": "/DemoERP/static/js/239.cce6fc9b.chunk.js",
+    "static/js/977.364d66b2.chunk.js": "/DemoERP/static/js/977.364d66b2.chunk.js",
+    "static/js/732.c34aa46f.chunk.js": "/DemoERP/static/js/732.c34aa46f.chunk.js",
+    "static/js/453.800e53fb.chunk.js": "/DemoERP/static/js/453.800e53fb.chunk.js",
     "static/media/logo.svg": "/DemoERP/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/DemoERP/index.html",
-    "main.f855e6bc.css.map": "/DemoERP/static/css/main.f855e6bc.css.map",
-    "main.fd867586.js.map": "/DemoERP/static/js/main.fd867586.js.map",
-    "453.71c34939.chunk.js.map": "/DemoERP/static/js/453.71c34939.chunk.js.map"
+    "main.473f8cb1.css.map": "/DemoERP/static/css/main.473f8cb1.css.map",
+    "main.b4d01d56.js.map": "/DemoERP/static/js/main.b4d01d56.js.map",
+    "239.cce6fc9b.chunk.js.map": "/DemoERP/static/js/239.cce6fc9b.chunk.js.map",
+    "732.c34aa46f.chunk.js.map": "/DemoERP/static/js/732.c34aa46f.chunk.js.map",
+    "453.800e53fb.chunk.js.map": "/DemoERP/static/js/453.800e53fb.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f855e6bc.css",
-    "static/js/main.fd867586.js"
+    "static/css/main.473f8cb1.css",
+    "static/js/main.b4d01d56.js"
   ]
 }
