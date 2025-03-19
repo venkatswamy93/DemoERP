@@ -6,17 +6,24 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Helvetica',
+    borderWidth: 1,
+    borderColor: 'lightcoral', // Light red color border
+    borderStyle: 'solid',
   },
   header: {
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 10,
+    borderBottom: '1 solid black',
+    paddingBottom: 5,
   },
   sectionHeader: {
     fontSize: 16,
     marginTop: 20,
     marginBottom: 10,
     fontWeight: 'bold',
+    borderBottom: '1 solid black',
+    paddingBottom: 5,
   },
   section: {
     fontSize: 12,
@@ -24,150 +31,89 @@ const styles = StyleSheet.create({
   },
   table: {
     width: '100%',
-    borderBottom: 1,
-    borderColor: '#000',
-    marginTop: 20,
+    marginTop: 10,
+    border: '1 solid black',
   },
   tableRow: {
     flexDirection: 'row',
-    borderBottom: 1,
-    borderColor: '#000',
+    borderBottom: '1 solid black',
   },
   tableCell: {
     padding: 5,
-    borderRight: 1,
-    borderColor: '#000',
     fontSize: 12,
+    flex: 1,
+    borderRight: '1 solid black',
   },
   tableHeaderCell: {
     padding: 5,
-    borderRight: 1,
-    borderColor: '#000',
     fontSize: 12,
     fontWeight: 'bold',
     backgroundColor: '#f2f2f2',
+    flex: 1,
+    borderRight: '1 solid black',
   },
   footer: {
     marginTop: 20,
     textAlign: 'center',
     fontSize: 10,
-  },
-  annexure: {
-    marginTop: 20,
-    fontSize: 12,
-  },
-  annexureTable: {
-    width: '100%',
-    marginTop: 10,
-    borderBottom: 1,
-    borderColor: '#000',
-  },
-  annexureRow: {
-    flexDirection: 'row',
-  },
-  annexureCell: {
-    padding: 5,
-    borderRight: 1,
-    borderColor: '#000',
-  },
-  annexureHeader: {
-    fontWeight: 'bold',
+    borderTop: '1 solid black',
+    paddingTop: 5,
   },
 });
 
-const QuotationPDF = () => (
+const QuotationPDF = ({ customer, rooms }) => (
   <Document>
+    {/* First Page - Customer Info */}
     <Page style={styles.page}>
-      {/* Header Section */}
       <Text style={styles.header}>Customer Quotation</Text>
       <Text style={styles.section}>Date: {new Date().toLocaleDateString()}</Text>
-
-      {/* Customer Information */}
       <Text style={styles.sectionHeader}>Customer Information</Text>
-      <Text style={styles.section}>Customer Name: John Doe</Text>
-      <Text style={styles.section}>Address: 123 Main Street, City, State</Text>
-      <Text style={styles.section}>Phone: +91 98765 43210</Text>
-      <Text style={styles.section}>Email: johndoe@example.com</Text>
+      <Text style={styles.section}>Customer Name: {customer.CXName}</Text>
+      <Text style={styles.section}>Address: {customer.address}</Text>
+      <Text style={styles.section}>Phone: {customer.phone}</Text>
+      <Text style={styles.section}>Email: {customer.email}</Text>
+    </Page>
 
-      {/* Material Quality & Branding */}
-      <Text style={styles.sectionHeader}>Material Quality & Branding</Text>
-      <Text style={styles.section}>
-        We use the highest quality materials, ensuring durability and style.
-      </Text>
-      <Text style={styles.section}>✔ Plywood - High-grade waterproof plywood</Text>
-      <Text style={styles.section}>✔ Laminates - Branded 1mm & 0.8mm laminates</Text>
-      <Text style={styles.section}>✔ Hardware - Hettich / Hafele / Blum</Text>
-      <Text style={styles.section}>✔ Finishes - PU, Acrylic, Veneer, Melamine</Text>
-
-      {/* Terms and Conditions */}
-      <Text style={styles.sectionHeader}>Terms & Conditions</Text>
-      <Text style={styles.section}>1. All prices are exclusive of GST (18%).</Text>
-      <Text style={styles.section}>2. 50% Advance payment is required before work starts.</Text>
-      <Text style={styles.section}>3. Project completion time: 4-6 weeks after site measurement.</Text>
-      <Text style={styles.section}>4. Any design modifications post-approval may lead to extra charges.</Text>
-      <Text style={styles.section}>5. Warranty covers only manufacturing defects.</Text>
-
-      {/* Room-wise Quotation */}
-      <Text style={styles.sectionHeader}>Room-wise Quotation</Text>
-      {/* Example room items - Replace with dynamic room data */}
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableHeaderCell, { width: '20%' }]}>Item Name</Text>
-          <Text style={[styles.tableHeaderCell, { width: '20%' }]}>Material</Text>
-          <Text style={[styles.tableHeaderCell, { width: '20%' }]}>Length</Text>
-          <Text style={[styles.tableHeaderCell, { width: '20%' }]}>Height</Text>
-          <Text style={[styles.tableHeaderCell, { width: '20%' }]}>Price</Text>
+    {/* Middle Pages - Room-wise Quotation */}
+    {rooms.map((room, index) => (
+      <Page key={index} style={styles.page}>
+        <Text style={styles.sectionHeader}>{room.name} Quotation</Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableHeaderCell}>Item</Text>
+            <Text style={styles.tableHeaderCell}>Material</Text>
+            <Text style={styles.tableHeaderCell}>Length</Text>
+            <Text style={styles.tableHeaderCell}>Height</Text>
+            <Text style={styles.tableHeaderCell}>Price</Text>
+          </View>
+          {room.items.map((item, idx) => (
+            <View key={idx} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <Text style={styles.tableCell}>{item.material}</Text>
+              <Text style={styles.tableCell}>{item.length}</Text>
+              <Text style={styles.tableCell}>{item.height}</Text>
+              <Text style={styles.tableCell}>₹{item.price}</Text>
+            </View>
+          ))}
         </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, { width: '20%' }]}>Item 1</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>Plywood</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>10</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>20</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>₹500</Text>
-        </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, { width: '20%' }]}>Item 2</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>Laminates</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>5</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>15</Text>
-          <Text style={[styles.tableCell, { width: '20%' }]}>₹400</Text>
-        </View>
-      </View>
+      </Page>
+    ))}
 
-      {/* Annexure (Material Specification and Payment Details) */}
+    {/* Last Page - Annexure and Payment Details */}
+    <Page style={styles.page}>
       <Text style={styles.sectionHeader}>ANNEXURE-1: Material Specification</Text>
-      <View style={styles.annexureTable}>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>S.No</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Particulars</Text>
-        </View>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>1</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Plywood (Dry Areas)</Text>
-        </View>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>2</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Plywood (Wet Areas)</Text>
-        </View>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>3</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Outer Laminate (1 MM)</Text>
-        </View>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>4</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Hardware</Text>
-        </View>
-        <View style={styles.annexureRow}>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>5</Text>
-          <Text style={[styles.annexureCell, { width: '50%' }]}>Glass</Text>
-        </View>
-      </View>
+      <Text style={styles.section}>1. Plywood (Dry Areas)</Text>
+      <Text style={styles.section}>2. Plywood (Wet Areas)</Text>
+      <Text style={styles.section}>3. Outer Laminate (1 MM)</Text>
+      <Text style={styles.section}>4. Hardware</Text>
+      <Text style={styles.section}>5. Glass</Text>
 
-      <Text style={styles.annexure}>Please issue A/c Payee cheques in the name of "SAMIKA DESIGN SOLUTIONS PRIVATE LIMITED".</Text>
-      <Text style={styles.annexure}>You can also make an Online transaction to the below account details:</Text>
-      <Text style={styles.annexure}>Bank: HDFC Bank, A/c Type: Current Account, UPI ID: DECR23GB0823179@hdfcbank</Text>
+      <Text style={styles.sectionHeader}>Payment Details</Text>
+      <Text style={styles.section}>A/c Name: Demo DESIGN SOLUTIONS PRIVATE LIMITED</Text>
+      <Text style={styles.section}>Bank: HDFC Bank</Text>
+      <Text style={styles.section}>A/c Type: Current Account</Text>
+      <Text style={styles.section}>UPI ID: Demo@hdfcbank</Text>
 
-      {/* Footer */}
       <Text style={styles.footer}>Thank you for choosing Interior for your design needs. We look forward to working with you!</Text>
     </Page>
   </Document>

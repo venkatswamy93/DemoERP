@@ -26,8 +26,6 @@ import {
   CTableHeaderCell,
   CTableRow
 } from "@coreui/react";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
 import * as XLSX from "xlsx";
 
 const roomsList = [
@@ -38,7 +36,7 @@ const roomsList = [
 
 const Customers = () => {
   const [data, setData] = useState([]);
-  const [customer, setCustomer] = useState({ CXName: "", CXLatestQuotation: "", CXStage: "" });
+  const [customer, setCustomer] = useState({ CXName: "", Property: "", Budget: "" });
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [roomQuotations, setRoomQuotations] = useState({});
@@ -68,41 +66,29 @@ const Customers = () => {
 
   const handleDownloadExcel = () => {
     const wsData = [];
-
-    // Create header row
-    wsData.push(["Room", "Item Name","Material", "Length", "Height", "Price", "Total"]);
+    wsData.push(["Room", "Item Name", "Material", "Length", "Height", "Price", "Total"]);
 
     addedRooms.forEach((room) => {
       const roomItems = roomQuotations[room];
       if (roomItems && roomItems.length > 0) {
         roomItems.forEach(item => {
-          wsData.push([
-            room,
-            item.name,
-            item.material,
-            item.length,
-            item.height,
-            item.price,
-            (((item.length * item.height)/90000) * item.price).toFixed(2)
-          ]);
+          wsData.push([room, item.name, item.material, item.length, item.height, item.price, ((item.length * item.height) / 90000) * item.price]);
         });
       }
     });
 
-    // Generate worksheet and workbook
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Quotation");
-
-    // Download the Excel file
     XLSX.writeFile(wb, "Customer_Quotation.xlsx");
   };
- 
-  
-  
+
   const handleDownload = () => {
-    // Generate PDF Blob and download
-    pdf(<QuotationPDF />)
+    if (!selectedCustomer || addedRooms.length === 0) return;
+    pdf(<QuotationPDF customer={selectedCustomer} rooms={addedRooms.map(room => ({
+      name: room,
+      items: roomQuotations[room]
+    }))} />)
       .toBlob()
       .then((blob) => {
         const link = document.createElement('a');
@@ -111,7 +97,6 @@ const Customers = () => {
         link.click();
       });
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -133,10 +118,7 @@ const Customers = () => {
 
     selectedCustomer.quotations?.forEach((quotation) => {
       setAddedRooms((prevRooms) => [...prevRooms, quotation.room]);
-      setRoomQuotations((prev) => ({
-        ...prev,
-        [quotation.room]: quotation.items
-      }));
+      setRoomQuotations((prev) => ({ ...prev, [quotation.room]: quotation.items }));
     });
   };
 
@@ -177,8 +159,8 @@ const Customers = () => {
         items,
         totalRoomPrice: items.reduce((total, item) => total + (item.length * item.height * item.price), 0)
       })),
-      totalPrice: Object.values(roomQuotations).reduce((total, items) => 
-        total + items.reduce((sum, item) => sum + (item.length * item.height * item.price), 0), 
+      totalPrice: Object.values(roomQuotations).reduce((total, items) =>
+        total + items.reduce((sum, item) => sum + (item.length * item.height * item.price), 0),
         0
       )
     };
@@ -198,18 +180,10 @@ const Customers = () => {
           <h2>Customer Management</h2>
           <CForm onSubmit={handleSubmit} className="m-2">
             <CRow>
-              <CCol>
-                <CFormInput type="text" name="CXName" placeholder="Customer Name" value={customer.CXName} onChange={handleChange} required />
-              </CCol>
-              <CCol>
-                <CFormInput type="text" name="Property" placeholder="Property Name" value={customer.Property} onChange={handleChange} required />
-              </CCol>
-              <CCol>
-                <CFormInput type="text" name="Budget" placeholder="Budget" value={customer.Budget} onChange={handleChange} required />
-              </CCol>
-              <CCol>
-                <CButton color="success" type="submit">Add Customer</CButton>
-              </CCol>
+              <CCol><CFormInput type="text" name="CXName" placeholder="Customer Name" value={customer.CXName} onChange={handleChange} required /></CCol>
+              <CCol><CFormInput type="text" name="Property" placeholder="Property Name" value={customer.Property} onChange={handleChange} required /></CCol>
+              <CCol><CFormInput type="text" name="Budget" placeholder="Budget" value={customer.Budget} onChange={handleChange} required /></CCol>
+              <CCol><CButton color="success" type="submit">Add Customer</CButton></CCol>
             </CRow>
           </CForm>
         </CCol>
@@ -232,85 +206,44 @@ const Customers = () => {
               <CFormSelect className="m-1" onChange={(e) => handleAddRoom(e.target.value)}>
                 <option value="">Select Room to Add</option>
                 {roomsList.map((room) => (
-                  <option className="m-2" key={room} value={room}>
-                    {room}
-                  </option>
+                  <option className="m-2" key={room} value={room}>{room}</option>
                 ))}
               </CFormSelect>
             </CCol>
             <CCol>
-            <figure class="text-center">
-  <blockquote class="blockquote">
-    <p>DEMO ERP</p>
-  </blockquote>
-  <figcaption class="blockquote-footer">
-    <cite title="Source Title"> Please Add Rooms for Quotation</cite>
-  </figcaption>
-</figure>
+              <figure className="text-center">
+                <blockquote className="blockquote">
+                  <p>DEMO ERP</p>
+                </blockquote>
+                <figcaption className="blockquote-footer">
+                  <cite title="Source Title"> Please Add Rooms for Quotation</cite>
+                </figcaption>
+              </figure>
             </CCol>
           </CRow>
-          <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-  {addedRooms.map((room) => (
-    <button class="nav-link active m-1" id="nav-home-tab" data-coreui-toggle="tab" data-coreui-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true" onClick ={()=> setActiveTab(room)} >{room}</button>
-  ))}
-  </div>
-</nav>
-        
 
-<CTabContent className="">
+          <nav>
+            <div className="nav nav-tabs" role="tablist">
+              {addedRooms.map((room) => (
+                <button key={room} className="nav-link active m-1" data-coreui-toggle="tab" role="tab" aria-selected="true" onClick={() => setActiveTab(room)}>{room}</button>
+              ))}
+            </div>
+          </nav>
+
+          <CTabContent>
             {addedRooms.map((room) => (
               <CTabPane key={room} visible={activeTab === room}>
                 <div>
                   <CRow className="m-2">
-                    <CCol>
-                      <CFormInput
-                        type="text"
-                        placeholder="Item Name"
-                        value={newItem.name}
-                        onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                      />
-                    </CCol>
-                    <CCol>
-                      <CFormInput
-                        type="text"
-                        placeholder="Material"
-                        value={newItem.material}
-                        onChange={(e) => setNewItem({ ...newItem, material: e.target.value })}
-                      />
-                    </CCol>
-                    <CCol>
-                      <CFormInput
-                        type="number"
-                        placeholder="Length"
-                        value={newItem.length}
-                        onChange={(e) => setNewItem({ ...newItem, length: parseFloat(e.target.value) })}
-                      />
-                    </CCol>
-                    <CCol>
-                      <CFormInput
-                        type="number"
-                        placeholder="Height"
-                        value={newItem.height}
-                        onChange={(e) => setNewItem({ ...newItem, height: parseFloat(e.target.value) })}
-                      />
-                    </CCol>
-                    <CCol>
-                      <CFormInput
-                        type="number"
-                        placeholder="Price"
-                        value={newItem.price}
-                        onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })}
-                      />
-                    </CCol>
-                    <CCol>
-                      <CButton color="primary" onClick={handleAddQuotationItem}>
-                        {editingItem !== null ? "Edit Item" : "Add Item"}
-                      </CButton>
-                    </CCol>
+                    <CCol><CFormInput type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} /></CCol>
+                    <CCol><CFormInput type="text" placeholder="Material" value={newItem.material} onChange={(e) => setNewItem({ ...newItem, material: e.target.value })} /></CCol>
+                    <CCol><CFormInput type="number" placeholder="Length" value={newItem.length} onChange={(e) => setNewItem({ ...newItem, length: parseFloat(e.target.value) })} /></CCol>
+                    <CCol><CFormInput type="number" placeholder="Height" value={newItem.height} onChange={(e) => setNewItem({ ...newItem, height: parseFloat(e.target.value) })} /></CCol>
+                    <CCol><CFormInput type="number" placeholder="Price" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })} /></CCol>
+                    <CCol><CButton color="primary" onClick={handleAddQuotationItem}>Add Item</CButton></CCol>
                   </CRow>
 
-                  <CTable hover bordered responsive>
+                  <CTable striped hover responsive>
                     <CTableHead>
                       <CTableRow>
                         <CTableHeaderCell>Item Name</CTableHeaderCell>
@@ -319,20 +252,20 @@ const Customers = () => {
                         <CTableHeaderCell>Height</CTableHeaderCell>
                         <CTableHeaderCell>Price</CTableHeaderCell>
                         <CTableHeaderCell>Total</CTableHeaderCell>
-                        <CTableHeaderCell>Actions</CTableHeaderCell>
+                        <CTableHeaderCell>Action</CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      {roomQuotations[room]?.map((item, index) => (
+                      {(roomQuotations[room] || []).map((item, index) => (
                         <CTableRow key={index}>
                           <CTableDataCell>{item.name}</CTableDataCell>
                           <CTableDataCell>{item.material}</CTableDataCell>
                           <CTableDataCell>{item.length}</CTableDataCell>
                           <CTableDataCell>{item.height}</CTableDataCell>
                           <CTableDataCell>{item.price}</CTableDataCell>
-                          <CTableDataCell>{((item.length * item.height )/90000 * item.price).toFixed(2)}</CTableDataCell>
+                          <CTableDataCell>{((item.length * item.height) / 90000) * item.price}</CTableDataCell>
                           <CTableDataCell>
-                            <CButton className="m-1" color="warning" onClick={() => handleEditQuotationItem(index)}>Edit</CButton>
+                            <CButton className='m-2' color="warning" onClick={() => handleEditQuotationItem(index)}>Edit</CButton>
                             <CButton color="danger" onClick={() => handleDeleteQuotationItem(index)}>Delete</CButton>
                           </CTableDataCell>
                         </CTableRow>
@@ -344,13 +277,15 @@ const Customers = () => {
             ))}
           </CTabContent>
         </CModalBody>
+
         <CModalFooter>
           <CButton color="secondary" onClick={() => setShowModal(false)}>Close</CButton>
-          <CButton color="primary" onClick={handleSaveQuotation}>Save Quotation</CButton>
-          <CButton color="success" onClick={handleDownload}>Download Quotation (PDF)</CButton>
-                    <CButton color="success" onClick={handleDownloadExcel}>Download Quotation (Excel)</CButton>
+          <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
+        <CButton className='m-2' color="info" onClick={handleDownloadExcel}>Download Excel</CButton>
+        <CButton color="info" className="ml-2" onClick={handleDownload}>Download PDF</CButton>
         </CModalFooter>
       </CModal>
+
     </div>
   );
 };
