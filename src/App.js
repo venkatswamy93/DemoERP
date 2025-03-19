@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import '@coreui/coreui/dist/css/coreui.min.css'
 import Sidebar from './components/Sidebar';
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {HashRouter , Routes, Route} from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import { CContainer, CRow, CCol } from '@coreui/react';
 import Home from './components/Home';
@@ -11,7 +11,7 @@ import Customers from './components/Customers';
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
       <CContainer>
         <CRow>
           <CCol >
@@ -26,7 +26,7 @@ function App() {
           </CCol>
         </CRow>
       </CContainer>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }
