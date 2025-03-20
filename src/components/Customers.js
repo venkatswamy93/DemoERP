@@ -316,7 +316,7 @@ const Customers = () => {
      <CTableDataCell>{item.length}</CTableDataCell>
      <CTableDataCell>{item.height}</CTableDataCell>
      <CTableDataCell>{item.price}</CTableDataCell>
-     <CTableDataCell>{(item.length * item.height * item.price).toFixed(2)}</CTableDataCell>
+     <CTableDataCell>{((item.length * item.height)/90000 * item.price).toFixed(2)}</CTableDataCell>
      <CTableDataCell>
        <CButton className="m-2" color="warning" onClick={() => handleEditQuotationItem(index)}>Edit</CButton>
        <CButton color="danger" onClick={() => handleDeleteQuotationItem(index)}>Delete</CButton>
