@@ -249,7 +249,7 @@ const Customers = () => {
         <CModalHeader>
           <CModalTitle>Update Quotation</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody style={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
           <CRow>
             <CCol xl={3}>
               <CFormSelect className="m-1" onChange={(e) => handleAddRoom(e.target.value)}>
@@ -259,19 +259,19 @@ const Customers = () => {
                 ))}
               </CFormSelect>
             </CCol>
-            <CCol xl={3} >
+            <CCol xl={3}>
               <h6>Add Percentage</h6>
               <CFormInput
-                 className="m-1"
+                className="m-1"
                 type="number"
                 name="gstPercentage"
                 value={gstPercentage}
                 onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
                 placeholder="GST (%)"
               />
-            <h6>Add Discount</h6>
+              <h6>Add Discount</h6>
               <CFormInput
-                 className="m-1"
+                className="m-1"
                 type="number"
                 name="discountPercentage"
                 value={discountPercentage}
@@ -292,26 +292,53 @@ const Customers = () => {
           </nav>
 
           <CRow>
-            <CCol xl={8}>
+            <CCol >
               {activeTab && roomQuotations[activeTab] && (
                 <div>
                   <h5>Quotation for {activeTab}</h5>
-                  <CButton color="primary" onClick={handleDownloadExcel}>Download Excel</CButton>
-                  <CButton color="primary" onClick={handleDownload}>Download PDF</CButton>
-                  <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
-                  <CTable bordered hover>
-                    <CTableHeaderCell>Name</CTableHeaderCell>
-                    <CTableHeaderCell>Material</CTableHeaderCell>
-                    <CTableHeaderCell>Length</CTableHeaderCell>
-                    <CTableHeaderCell>Height</CTableHeaderCell>
-                    <CTableHeaderCell>Price</CTableHeaderCell>
-                    <CTableHeaderCell>Total</CTableHeaderCell>
+                  <CForm className="m-2">
+                    <CRow>
+                      <CCol><CFormInput type="text" value={newItem.name} placeholder="Item Name" onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} /></CCol>
+                      <CCol><CFormInput type="text" value={newItem.material} placeholder="Material" onChange={(e) => setNewItem({ ...newItem, material: e.target.value })} /></CCol>
+                      <CCol><CFormInput type="number" value={newItem.length} placeholder="Length" onChange={(e) => setNewItem({ ...newItem, length: parseFloat(e.target.value) })} /></CCol>
+                      <CCol><CFormInput type="number" value={newItem.height} placeholder="Height" onChange={(e) => setNewItem({ ...newItem, height: parseFloat(e.target.value) })} /></CCol>
+                      <CCol><CFormInput type="number" value={newItem.price} placeholder="Price" onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })} /></CCol>
+                      <CCol><CButton color="primary" onClick={handleAddQuotationItem}>Add Item</CButton></CCol>
+                    </CRow>
+                  </CForm>
+                  
+                  <CTable hover bordered>
+                  {Array.isArray(roomQuotations[activeTab]) && roomQuotations[activeTab].map((item, index) => (
+                    <CTableBody>
+   <CTableRow key={index}>
+     <CTableDataCell>{item.name}</CTableDataCell>
+     <CTableDataCell>{item.material}</CTableDataCell>
+     <CTableDataCell>{item.length}</CTableDataCell>
+     <CTableDataCell>{item.height}</CTableDataCell>
+     <CTableDataCell>{item.price}</CTableDataCell>
+     <CTableDataCell>{(item.length * item.height * item.price).toFixed(2)}</CTableDataCell>
+     <CTableDataCell>
+       <CButton className="m-2" color="warning" onClick={() => handleEditQuotationItem(index)}>Edit</CButton>
+       <CButton color="danger" onClick={() => handleDeleteQuotationItem(index)}>Delete</CButton>
+     </CTableDataCell>
+   </CTableRow>
+                  </CTableBody>
+))}
                   </CTable>
+
                 </div>
               )}
             </CCol>
           </CRow>
+
         </CModalBody>
+
+        <CModalFooter style={{ position: "relative", bottom: "10px", left: "10px" }}>
+          <CButton color="secondary" onClick={() => setShowModal(false)}>Close</CButton>
+          <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
+          <CButton color="success" onClick={handleDownloadExcel}>Download Excel</CButton>
+          <CButton color="info" onClick={handleDownload}>Download PDF</CButton>
+        </CModalFooter>
       </CModal>
     </div>
   );
