@@ -1,5 +1,7 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image  } from '@react-pdf/renderer';
+
+const logoBase64 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgNTAiPjx0ZXh0IHg9IjEwIiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSJibGFjayI+RGVtbyBJbnRlcmllb3JzPC90ZXh0Pjwvc3ZnPg==';
 
 const styles = StyleSheet.create({
   pageWrapper: {
@@ -70,6 +72,13 @@ const styles = StyleSheet.create({
     borderTop: '1 solid black',
     paddingTop: 5,
   },
+  logo: {
+    position: 'absolute',
+    top: 10,
+    left: 30,
+    width: 50,
+    height: 50,
+  },
 });
 
 const QuotationPDF = ({ customer, rooms, summary }) => {
@@ -78,6 +87,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       {/* Introduction Page */}
       <Page size="A4" style={styles.pageWrapper}>
         <View style={styles.page}>
+        <Image style={styles.logo} src={logoBase64} />
           <Text style={styles.header}>Customer Quotation</Text>
           <Text style={styles.section}>Date: {new Date().toLocaleDateString()}</Text>
           <Text style={styles.sectionHeader}>Customer Information</Text>
@@ -92,6 +102,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       {/* Quotation Summary Table */}
       <Page size="A4" style={styles.pageWrapper}>
         <View style={styles.page}>
+        <Image style={styles.logo} src={logoBase64} />
           <Text style={styles.sectionHeader}>Quotation Summary</Text>
           <View style={styles.summaryTable}>
             <View style={styles.summaryTableRow}>
@@ -132,6 +143,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       {rooms.map((room, index) => (
         <Page size="A4" key={index} style={styles.pageWrapper}>
           <View style={styles.page}>
+          <Image style={styles.logo} src={logoBase64} />
             <Text style={styles.sectionHeader}>{room.name} Quotation</Text>
             <View style={styles.table}>
               <View style={styles.tableRow}>
@@ -161,6 +173,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       {/* Payment Details & Terms */}
       <Page size="A4" style={styles.pageWrapper}>
         <View style={styles.page}>
+        <Image style={styles.logo} src={logoBase64} />
           <Text style={styles.sectionHeader}>Payment Schedule</Text>
           <Text style={styles.section}>1. 10% for design meetings & booking confirmation.</Text>
           <Text style={styles.section}>2. 50% upon contract signing.</Text>
