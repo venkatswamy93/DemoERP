@@ -138,30 +138,31 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
             </View>
             {summary.rooms.map((room, idx) => (
               <View key={idx} style={styles.summaryTableRow}>
-                <Text style={styles.summaryTableCell}>{room.name}</Text>
-                <Text style={styles.summaryTableCell}>{room.totalPrice}</Text>
-              </View>
+              <Text style={styles.summaryTableCell}>{room.name}</Text>
+              <Text style={styles.summaryTableCell}>{Number(room.totalPrice || 0).toLocaleString('en-IN')}</Text>
+            </View>
             ))}
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>Total</Text>
-              <Text style={styles.summaryTableCell}>{summary.total}</Text>
+              <Text style={styles.summaryTableCell}>{Number(summary.total || 0).toLocaleString('en-IN')}</Text>
             </View>
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>Discount @ {summary.discountPercentage}%</Text>
-              <Text style={styles.summaryTableCell}> {summary.discount}</Text>
+              <Text style={styles.summaryTableCell}>{Number(summary.discount || 0).toLocaleString('en-IN')}</Text>
             </View>
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>Subtotal</Text>
-              <Text style={styles.summaryTableCell}> {summary.subtotal}</Text>
+              <Text style={styles.summaryTableCell}>{Number(summary.subtotal || 0).toLocaleString('en-IN')}</Text>
             </View>
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>GST @ {summary.gstPercentage}%</Text>
-              <Text style={styles.summaryTableCell}> {summary.gst}</Text>
+              <Text style={styles.summaryTableCell}>{Number(summary.gst || 0).toLocaleString('en-IN')}</Text>
             </View>
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>Total Payable</Text>
-              <Text style={styles.summaryTableCell}> {summary.totalPayable}</Text>
+              <Text style={styles.summaryTableCell}>{Number(summary.totalPayable || 0).toLocaleString('en-IN')}</Text>
             </View>
+            
           </View>
         </View>
       </Page>
@@ -190,7 +191,9 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
                     {(parseFloat((Number(item.length) * Number(item.height)) / 90000)).toFixed(2) + ' SFT'}
                   </Text>
                   <Text style={styles.tableCell}>
-                    {parseFloat(((Number(item.length) * Number(item.height)) / 90000) * item.price).toFixed(2)}
+                  {Number(
+  (parseFloat(((Number(item.length) * Number(item.height)) / 90000) * item.price).toFixed(2))
+).toLocaleString('en-IN')}
                   </Text>
                 </View>
               ))}
