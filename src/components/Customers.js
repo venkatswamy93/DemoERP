@@ -45,6 +45,9 @@ const Customers = () => {
   const [newItem, setNewItem] = useState({ name: "", material: "", length: 0, height: 0, price: 0 });
   const [editingItem, setEditingItem] = useState(null);
 
+  const [gstPercentage, setGstPercentage] = useState(18);  // Default GST Percentage
+  const [discountPercentage, setDiscountPercentage] = useState(13);  // Default Discount Percentage
+
   useEffect(() => {
     setData(getCustomerData());
   }, []);
@@ -85,10 +88,50 @@ const Customers = () => {
 
   const handleDownload = () => {
     if (!selectedCustomer || addedRooms.length === 0) return;
-    pdf(<QuotationPDF customer={selectedCustomer} rooms={addedRooms.map(room => ({
+
+    const calculateRoomTotal = (room) => {
+      return room.items.reduce((sum, item) => sum + item.price, 0);
+    };
+
+    const calculateTotalPrice = (rooms) => {
+      return rooms.reduce((sum, room) => sum + calculateRoomTotal(room), 0);
+    };
+
+    const formattedCustomer = {
+      name: selectedCustomer.CXName,
+      address: selectedCustomer.Property,
+      phone: "N/A",
+      email: "N/A"
+    };
+
+    const formattedRooms = addedRooms.map(room => ({
       name: room,
-      items: roomQuotations[room]
-    }))} />)
+      items: roomQuotations[room] || []
+    }));
+
+    const roomTotalPrice = calculateTotalPrice(formattedRooms);
+
+    // Using dynamic user input for GST and Discount Percentage
+    const discount = roomTotalPrice * (discountPercentage / 100);
+    const subtotal = roomTotalPrice - discount;
+    const gst = roomTotalPrice * (gstPercentage / 100);
+    const totalPayable = subtotal + gst;
+
+    const summary = {
+      rooms: formattedRooms.map(room => ({
+        name: room.name,
+        totalPrice: calculateRoomTotal(room)
+      })),
+      total: roomTotalPrice,
+      discountPercentage,
+      discount,
+      subtotal,
+      gstPercentage,
+      gst,
+      totalPayable
+    };
+
+    pdf(<QuotationPDF customer={formattedCustomer} rooms={formattedRooms} summary={summary} />)
       .toBlob()
       .then((blob) => {
         const link = document.createElement('a');
@@ -161,8 +204,7 @@ const Customers = () => {
       })),
       totalPrice: Object.values(roomQuotations).reduce((total, items) =>
         total + items.reduce((sum, item) => sum + (item.length * item.height * item.price), 0),
-        0
-      )
+        0)
     };
 
     updateCustomerQuotation(updatedCustomer.index, updatedCustomer.quotations);
@@ -210,15 +252,25 @@ const Customers = () => {
                 ))}
               </CFormSelect>
             </CCol>
-            <CCol>
-              <figure className="text-center">
-                <blockquote className="blockquote">
-                  <p>DEMO ERP</p>
-                </blockquote>
-                <figcaption className="blockquote-footer">
-                  <cite title="Source Title"> Please Add Rooms for Quotation</cite>
-                </figcaption>
-              </figure>
+            <CCol xl={3} >
+            <h6>Add Percentage</h6>
+              <CFormInput
+                 className="m-1"
+                type="number"
+                name="gstPercentage"
+                value={gstPercentage}
+                onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
+                placeholder="GST (%)"
+              />
+            <h6>Add Discount</h6>
+              <CFormInput
+                 className="m-1"
+s                type="number"
+                name="discountPercentage"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
+                placeholder="Discount (%)"
+              />
             </CCol>
           </CRow>
 
@@ -281,11 +333,10 @@ const Customers = () => {
         <CModalFooter>
           <CButton color="secondary" onClick={() => setShowModal(false)}>Close</CButton>
           <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
-        <CButton className='m-2' color="info" onClick={handleDownloadExcel}>Download Excel</CButton>
-        <CButton color="info" className="ml-2" onClick={handleDownload}>Download PDF</CButton>
+          <CButton className='m-2' color="info" onClick={handleDownloadExcel}>Download Excel</CButton>
+          <CButton color="info" className="ml-2" onClick={handleDownload}>Download PDF</CButton>
         </CModalFooter>
       </CModal>
-
     </div>
   );
 };
