@@ -49,7 +49,11 @@ const Customers = () => {
   const [discountPercentage, setDiscountPercentage] = useState(13);  // Default Discount Percentage
 
   useEffect(() => {
-    setData(getCustomerData());
+    const fetchData = async () => {
+      const customerData = await getCustomerData();
+      setData(customerData);
+    };
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
@@ -88,42 +92,38 @@ const Customers = () => {
 
   const handleDownload = () => {
     if (!selectedCustomer || addedRooms.length === 0) return;
-  
-    // Function to calculate room total price using the formula ((length * height) / 90000) * price with 2 decimal precision
+
     const calculateRoomTotal = (room) => {
       return room.items.reduce((sum, item) => {
         const { length, height, price } = item;
-        // Calculate price based on the given formula
         const roomPrice = ((length * height) / 90000) * price;
-        // Round to 2 decimal places
         return sum + parseFloat(roomPrice.toFixed(2));
       }, 0);
     };
-  
+
     const calculateTotalPrice = (rooms) => {
       return rooms.reduce((sum, room) => sum + calculateRoomTotal(room), 0);
     };
-  
+
     const formattedCustomer = {
       name: selectedCustomer.CXName,
       address: selectedCustomer.Property,
       phone: "N/A",
       email: "N/A"
     };
-  
+
     const formattedRooms = addedRooms.map(room => ({
       name: room,
       items: roomQuotations[room] || []
     }));
-  
+
     const roomTotalPrice = calculateTotalPrice(formattedRooms);
-  
-    // Using dynamic user input for GST and Discount Percentage
+
     const discount = parseFloat(roomTotalPrice * (discountPercentage / 100)).toFixed(2);
-    const subtotal =parseFloat( roomTotalPrice - discount).toFixed(2);
+    const subtotal = parseFloat(roomTotalPrice - discount).toFixed(2);
     const gst = parseFloat(roomTotalPrice * (gstPercentage / 100)).toFixed(2);
     const totalPayable = parseFloat(subtotal + gst).toFixed(2);
-  
+
     const summary = {
       rooms: formattedRooms.map(room => ({
         name: room.name,
@@ -137,7 +137,7 @@ const Customers = () => {
       gst,
       totalPayable
     };
-  
+
     pdf(<QuotationPDF customer={formattedCustomer} rooms={formattedRooms} summary={summary} />)
       .toBlob()
       .then((blob) => {
@@ -147,17 +147,16 @@ const Customers = () => {
         link.click();
       });
   };
-  
-  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!customer.CXName || !customer.Property || !customer.Budget) {
       alert("Please fill in all required fields.");
       return;
     }
-    addCustomer(customer);
-    setData(getCustomerData());
+    await addCustomer(customer);
+    const updatedData = await getCustomerData();
+    setData(updatedData);
     setCustomer({ CXName: "", Property: "", Budget: "" });
   };
 
@@ -201,7 +200,7 @@ const Customers = () => {
     setNewItem({ name: "", material: "", length: 0, height: 0, price: 0 });
   };
 
-  const handleSaveQuotation = () => {
+  const handleSaveQuotation = async () => {
     if (!selectedCustomer) return;
 
     const updatedCustomer = {
@@ -216,10 +215,9 @@ const Customers = () => {
         0)
     };
 
-    updateCustomerQuotation(updatedCustomer.index, updatedCustomer.quotations);
-    setData((prevData) => prevData.map((customer, index) =>
-      index === updatedCustomer.index ? updatedCustomer : customer
-    ));
+    await updateCustomerQuotation(selectedCustomer.id, updatedCustomer.quotations);
+    const updatedData = await getCustomerData();
+    setData(updatedData);
 
     setShowModal(false);
   };
@@ -262,7 +260,7 @@ const Customers = () => {
               </CFormSelect>
             </CCol>
             <CCol xl={3} >
-            <h6>Add Percentage</h6>
+              <h6>Add Percentage</h6>
               <CFormInput
                  className="m-1"
                 type="number"
@@ -274,7 +272,7 @@ const Customers = () => {
             <h6>Add Discount</h6>
               <CFormInput
                  className="m-1"
-s                type="number"
+                type="number"
                 name="discountPercentage"
                 value={discountPercentage}
                 onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
@@ -286,65 +284,34 @@ s                type="number"
           <nav>
             <div className="nav nav-tabs" role="tablist">
               {addedRooms.map((room) => (
-                <button key={room} className="nav-link active m-1" data-coreui-toggle="tab" role="tab" aria-selected="true" onClick={() => setActiveTab(room)}>{room}</button>
+                <button key={room} className={`nav-link ${activeTab === room ? 'active' : ''}`} onClick={() => setActiveTab(room)}>
+                  {room}
+                </button>
               ))}
             </div>
           </nav>
 
-          <CTabContent>
-            {addedRooms.map((room) => (
-              <CTabPane key={room} visible={activeTab === room}>
+          <CRow>
+            <CCol xl={8}>
+              {activeTab && roomQuotations[activeTab] && (
                 <div>
-                  <CRow className="m-2">
-                    <CCol><CFormInput type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} /></CCol>
-                    <CCol><CFormInput type="text" placeholder="Material" value={newItem.material} onChange={(e) => setNewItem({ ...newItem, material: e.target.value })} /></CCol>
-                    <CCol><CFormInput type="number" placeholder="Length" value={newItem.length} onChange={(e) => setNewItem({ ...newItem, length: parseFloat(e.target.value) })} /></CCol>
-                    <CCol><CFormInput type="number" placeholder="Height" value={newItem.height} onChange={(e) => setNewItem({ ...newItem, height: parseFloat(e.target.value) })} /></CCol>
-                    <CCol><CFormInput type="number" placeholder="Price" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })} /></CCol>
-                    <CCol><CButton color="primary" onClick={handleAddQuotationItem}>Add Item</CButton></CCol>
-                  </CRow>
-
-                  <CTable striped hover responsive>
-                    <CTableHead>
-                      <CTableRow>
-                        <CTableHeaderCell>Item Name</CTableHeaderCell>
-                        <CTableHeaderCell>Material</CTableHeaderCell>
-                        <CTableHeaderCell>Length</CTableHeaderCell>
-                        <CTableHeaderCell>Height</CTableHeaderCell>
-                        <CTableHeaderCell>Price</CTableHeaderCell>
-                        <CTableHeaderCell>Total</CTableHeaderCell>
-                        <CTableHeaderCell>Action</CTableHeaderCell>
-                      </CTableRow>
-                    </CTableHead>
-                    <CTableBody>
-                      {(roomQuotations[room] || []).map((item, index) => (
-                        <CTableRow key={index}>
-                          <CTableDataCell>{item.name}</CTableDataCell>
-                          <CTableDataCell>{item.material}</CTableDataCell>
-                          <CTableDataCell>{item.length}</CTableDataCell>
-                          <CTableDataCell>{item.height}</CTableDataCell>
-                          <CTableDataCell>{item.price}</CTableDataCell>
-                          <CTableDataCell>{((item.length * item.height) / 90000) * item.price}</CTableDataCell>
-                          <CTableDataCell>
-                            <CButton className='m-2' color="warning" onClick={() => handleEditQuotationItem(index)}>Edit</CButton>
-                            <CButton color="danger" onClick={() => handleDeleteQuotationItem(index)}>Delete</CButton>
-                          </CTableDataCell>
-                        </CTableRow>
-                      ))}
-                    </CTableBody>
+                  <h5>Quotation for {activeTab}</h5>
+                  <CButton color="primary" onClick={handleDownloadExcel}>Download Excel</CButton>
+                  <CButton color="primary" onClick={handleDownload}>Download PDF</CButton>
+                  <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
+                  <CTable bordered hover>
+                    <CTableHeaderCell>Name</CTableHeaderCell>
+                    <CTableHeaderCell>Material</CTableHeaderCell>
+                    <CTableHeaderCell>Length</CTableHeaderCell>
+                    <CTableHeaderCell>Height</CTableHeaderCell>
+                    <CTableHeaderCell>Price</CTableHeaderCell>
+                    <CTableHeaderCell>Total</CTableHeaderCell>
                   </CTable>
                 </div>
-              </CTabPane>
-            ))}
-          </CTabContent>
+              )}
+            </CCol>
+          </CRow>
         </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowModal(false)}>Close</CButton>
-          <CButton color="primary" onClick={handleSaveQuotation}>Save</CButton>
-          <CButton className='m-2' color="info" onClick={handleDownloadExcel}>Download Excel</CButton>
-          <CButton color="info" className="ml-2" onClick={handleDownload}>Download PDF</CButton>
-        </CModalFooter>
       </CModal>
     </div>
   );
