@@ -88,35 +88,42 @@ const Customers = () => {
 
   const handleDownload = () => {
     if (!selectedCustomer || addedRooms.length === 0) return;
-
+  
+    // Function to calculate room total price using the formula ((length * height) / 90000) * price with 2 decimal precision
     const calculateRoomTotal = (room) => {
-      return room.items.reduce((sum, item) => sum + item.price, 0);
+      return room.items.reduce((sum, item) => {
+        const { length, height, price } = item;
+        // Calculate price based on the given formula
+        const roomPrice = ((length * height) / 90000) * price;
+        // Round to 2 decimal places
+        return sum + parseFloat(roomPrice.toFixed(2));
+      }, 0);
     };
-
+  
     const calculateTotalPrice = (rooms) => {
       return rooms.reduce((sum, room) => sum + calculateRoomTotal(room), 0);
     };
-
+  
     const formattedCustomer = {
       name: selectedCustomer.CXName,
       address: selectedCustomer.Property,
       phone: "N/A",
       email: "N/A"
     };
-
+  
     const formattedRooms = addedRooms.map(room => ({
       name: room,
       items: roomQuotations[room] || []
     }));
-
+  
     const roomTotalPrice = calculateTotalPrice(formattedRooms);
-
+  
     // Using dynamic user input for GST and Discount Percentage
-    const discount = roomTotalPrice * (discountPercentage / 100);
-    const subtotal = roomTotalPrice - discount;
-    const gst = roomTotalPrice * (gstPercentage / 100);
-    const totalPayable = subtotal + gst;
-
+    const discount = parseFloat(roomTotalPrice * (discountPercentage / 100)).toFixed(2);
+    const subtotal =parseFloat( roomTotalPrice - discount).toFixed(2);
+    const gst = parseFloat(roomTotalPrice * (gstPercentage / 100)).toFixed(2);
+    const totalPayable = parseFloat(subtotal + gst).toFixed(2);
+  
     const summary = {
       rooms: formattedRooms.map(room => ({
         name: room.name,
@@ -130,7 +137,7 @@ const Customers = () => {
       gst,
       totalPayable
     };
-
+  
     pdf(<QuotationPDF customer={formattedCustomer} rooms={formattedRooms} summary={summary} />)
       .toBlob()
       .then((blob) => {
@@ -140,6 +147,8 @@ const Customers = () => {
         link.click();
       });
   };
+  
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

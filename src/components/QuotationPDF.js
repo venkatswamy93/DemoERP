@@ -2,7 +2,7 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
-  page: { padding: 30, fontFamily: 'Helvetica' },
+  page: { padding: 30, fontFamily: 'Helvetica', border:'1 solid black' },
   header: { fontSize: 18, textAlign: 'center', marginBottom: 10, fontWeight: 'bold' },
   sectionHeader: { fontSize: 14, marginTop: 10, marginBottom: 5, fontWeight: 'bold' },
   section: { fontSize: 12, marginBottom: 5 },
@@ -19,7 +19,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
   return (
     <Document>
       {/* Introduction Page */}
-      <Page style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <Text style={styles.header}>Customer Quotation</Text>
         <Text style={styles.section}>Date: {new Date().toLocaleDateString()}</Text>
         <Text style={styles.sectionHeader}>Customer Information</Text>
@@ -31,7 +31,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       </Page>
 
       {/* Quotation Summary Table */}
-      <Page style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <Text style={styles.sectionHeader}>Quotation Summary</Text>
         <View style={styles.summaryTable}>
           <View style={styles.summaryTableRow}>
@@ -41,35 +41,35 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
           {summary.rooms.map((room, idx) => (
             <View key={idx} style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>{room.name}</Text>
-              <Text style={styles.summaryTableCell}>₹{room.totalPrice}</Text>
+              <Text style={styles.summaryTableCell}>{room.totalPrice}</Text>
             </View>
           ))}
           <View style={styles.summaryTableRow}>
             <Text style={styles.summaryTableCell}>Total</Text>
-            <Text style={styles.summaryTableCell}>₹{summary.total}</Text>
+            <Text style={styles.summaryTableCell}>{summary.total}</Text>
           </View>
           <View style={styles.summaryTableRow}>
             <Text style={styles.summaryTableCell}>Discount @ {summary.discountPercentage}%</Text>
-            <Text style={styles.summaryTableCell}>₹{summary.discount}</Text>
+            <Text style={styles.summaryTableCell}> {summary.discount}</Text>
           </View>
           <View style={styles.summaryTableRow}>
             <Text style={styles.summaryTableCell}>Subtotal</Text>
-            <Text style={styles.summaryTableCell}>₹{summary.subtotal}</Text>
+            <Text style={styles.summaryTableCell}> {summary.subtotal}</Text>
           </View>
           <View style={styles.summaryTableRow}>
             <Text style={styles.summaryTableCell}>GST @ {summary.gstPercentage}%</Text>
-            <Text style={styles.summaryTableCell}>₹{summary.gst}</Text>
+            <Text style={styles.summaryTableCell}> {summary.gst}</Text>
           </View>
           <View style={styles.summaryTableRow}>
             <Text style={styles.summaryTableCell}>Total Payable</Text>
-            <Text style={styles.summaryTableCell}>₹{summary.totalPayable}</Text>
+            <Text style={styles.summaryTableCell}> {summary.totalPayable}</Text>
           </View>
         </View>
       </Page>
 
       {/* Detailed Room-wise Quotation */}
       {rooms.map((room, index) => (
-        <Page key={index} style={styles.page}>
+        <Page size="A4" key={index} style={styles.page}>
           <Text style={styles.sectionHeader}>{room.name} Quotation</Text>
           <View style={styles.table}>
             <View style={styles.tableRow}>
@@ -83,8 +83,8 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
                 <Text style={styles.tableCell}>{item.name}</Text>
                 <Text style={styles.tableCell}>{item.material}</Text>
                 {console.log(item)}
-                <Text style={styles.tableCell}>{(Number(item.length) * Number(item.height)) / 90000 +' SFT'}</Text>
-                <Text style={styles.tableCell}>₹{item.price}</Text>
+                <Text style={styles.tableCell}>{(parseFloat((Number(item.length) * Number(item.height)) / 90000)  ).toFixed(2) + ' SFT'}</Text>
+                <Text style={styles.tableCell}>{(parseFloat(((Number(item.length) * Number(item.height)) / 90000) * item.price).toFixed(2))}</Text>
               </View>
             ))}
           </View>
@@ -92,13 +92,13 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
       ))}
 
       {/* Payment Details & Terms */}
-      <Page style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <Text style={styles.sectionHeader}>Payment Schedule</Text>
         <Text style={styles.section}>1. 10% for design meetings & booking confirmation.</Text>
         <Text style={styles.section}>2. 50% upon contract signing.</Text>
         <Text style={styles.section}>3. 40% before furniture delivery.</Text>
         <Text style={styles.section}>4. Payments are non-refundable.</Text>
-        <Text style={styles.section}>5. Minimum project value: ₹4,00,000 (Excluding GST).</Text>
+        <Text style={styles.section}>5. Minimum project value:  4,00,000 (Excluding GST).</Text>
         
         <Text style={styles.sectionHeader}>Bank Details</Text>
         <Text style={styles.section}>A/c Name: DEMO Design Solutions Pvt Ltd</Text>
