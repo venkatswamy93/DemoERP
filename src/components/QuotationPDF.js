@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
       marginTop: 20,
       width: '100%',
       border: '2px solid #222',
-      backgroundColor: '#FFF5E1',
+      backgroundColor: '#c7c1c1',
     },
     summaryTableRow: {
       flexDirection: 'row',
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     summaryTableRowHead:{
       flexDirection: 'row',
       borderBottom: '1 solid #444',
-      backgroundColor: 'red',
+      backgroundColor: '#f07971',
     },
     footer: {
       marginTop: 25,
