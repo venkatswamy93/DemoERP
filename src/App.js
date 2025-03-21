@@ -1,25 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { CContainer, CRow, CCol } from '@coreui/react'; // Assuming you're using CoreUI
-import Sidebar from './components/Sidebar'; // Your Sidebar component
-import Dashboard from './components/Dashboard'; // Your Dashboard component
-import Home from './components/Home'; // Your Home component
-import Customers from './components/Customers'; // Your Customers component
-import Login from './pages/Login'; // Your Login component
-import Register from './pages/Register'; // Your Register component
+import { CContainer, CRow, CCol } from '@coreui/react';
+import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard';
+import Home from './components/Home';
+import Customers from './components/Customers';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if the user is logged in
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication state from localStorage on component mount
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // Function to handle login success
   const handleLogin = () => {
-    setIsAuthenticated(true); // Set to true on successful login
+    localStorage.setItem('isAuthenticated', 'true'); // Persist login
+    setIsAuthenticated(true);
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated'); // Clear authentication state
+    setIsAuthenticated(false);
   };
 
   return (
     <Router>
       <Routes>
-        {/* Public Routes (Login and Register) */}
+        {/* Public Routes (Login & Register) */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register />} />
 
@@ -30,10 +45,10 @@ function App() {
             isAuthenticated ? (
               <CContainer>
                 <CRow>
-                  <CCol>
-                    <Sidebar />
+                  <CCol md={3}>
+                    <Sidebar onLogout={handleLogout} /> {/* Pass logout function */}
                   </CCol>
-                  <CCol xs={9} className="border m-5">
+                  <CCol md={9} className="border m-5">
                     <Routes>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/home" element={<Home />} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, signInWithEmailAndPassword } from "../firebaseConfig";
 import { CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, CForm, CFormInput, CButton } from "@coreui/react";
@@ -9,11 +9,20 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Check if user is already authenticated (persist login state)
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("isAuthenticated");
+    if (storedAuth === "true") {
+      navigate("/dashboard"); // Redirect if already logged in
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      onLogin(); // Call onLogin to update authentication state
+      localStorage.setItem("isAuthenticated", "true"); // Store auth state
+      onLogin(); // Update app state
       navigate("/dashboard"); // Redirect to dashboard
     } catch (err) {
       setError("Invalid email or password");
