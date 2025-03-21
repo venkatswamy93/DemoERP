@@ -17,6 +17,7 @@ import {
   CModal,
   CModalBody,
   CModalFooter,
+  CCardText,
 } from "@coreui/react";
 
 // Validation Schema
@@ -64,33 +65,55 @@ const Register = () => {
   return (
     <CContainer className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <CRow className="w-100 justify-content-center">
-        <CCol md={5}>
-          <CCard className="p-4 shadow-lg bg-white rounded">
-            <CCardHeader className="text-center">Register</CCardHeader>
+        <CCol md={6}>
+          <CCard className="p-3 shadow-lg bg-white rounded">
+            <CCardHeader className="text-center fs-5 fw-bold">Welcome to Demo Interiors
+            <CCardText className="text-center fs-10 fw-normal">Please Enter Details to Register</CCardText>
+            </CCardHeader>
             <CCardBody>
               <CForm onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-                <CFormInput type="text" label="Full Name" {...register("name")} invalid={!!errors.name} />
-                {errors.name && <small className="text-danger">{errors.name.message}</small>}
+                <CRow>
+                  <CCol md={6}>
+                    <CFormInput type="text" label="Full Name" {...register("name")} invalid={!!errors.name} />
+                    {errors.name && <small className="text-danger">{errors.name.message}</small>}
+                  </CCol>
+                  <CCol md={6}>
+                    <CFormInput type="email" label="Email Address" {...register("email")} invalid={!!errors.email} />
+                    {errors.email && <small className="text-danger">{errors.email.message}</small>}
+                  </CCol>
+                </CRow>
 
-                <CFormInput type="email" label="Email Address" {...register("email")} invalid={!!errors.email} />
-                {errors.email && <small className="text-danger">{errors.email.message}</small>}
+                <CRow>
+                  <CCol md={6}>
+                    <CFormInput type="text" label="Phone Number" {...register("phone")} invalid={!!errors.phone} />
+                    {errors.phone && <small className="text-danger">{errors.phone.message}</small>}
+                  </CCol>
+                  <CCol md={6}>
+                    <CFormInput type="text" label="Address" {...register("address")} invalid={!!errors.address} />
+                    {errors.address && <small className="text-danger">{errors.address.message}</small>}
+                  </CCol>
+                </CRow>
 
-                <CFormInput type="text" label="Phone Number" {...register("phone")} invalid={!!errors.phone} />
-                {errors.phone && <small className="text-danger">{errors.phone.message}</small>}
-
-                <CFormInput type="text" label="Address" {...register("address")} invalid={!!errors.address} />
-                {errors.address && <small className="text-danger">{errors.address.message}</small>}
-
-                <CFormInput type="password" label="Set Password" {...register("password")} invalid={!!errors.password} />
-                {errors.password && <small className="text-danger">{errors.password.message}</small>}
-
-                <CFormInput type="password" label="Confirm Password" {...register("confirmPassword")} invalid={!!errors.confirmPassword} />
-                {errors.confirmPassword && <small className="text-danger">{errors.confirmPassword.message}</small>}
+                <CRow>
+                  <CCol md={6}>
+                    <CFormInput type="password" label="Set Password" {...register("password")} invalid={!!errors.password} />
+                    {errors.password && <small className="text-danger">{errors.password.message}</small>}
+                  </CCol>
+                  <CCol md={6}>
+                    <CFormInput type="password" label="Confirm Password" {...register("confirmPassword")} invalid={!!errors.confirmPassword} />
+                    {errors.confirmPassword && <small className="text-danger">{errors.confirmPassword.message}</small>}
+                  </CCol>
+                </CRow>
 
                 <CButton color="primary" type="submit" className="w-100">
                   Register
                 </CButton>
               </CForm>
+              <div className="text-center mt-3">
+                <CButton color="secondary" onClick={() => navigate("/login")}>
+                  Go to Login
+                </CButton>
+              </div>
             </CCardBody>
           </CCard>
         </CCol>

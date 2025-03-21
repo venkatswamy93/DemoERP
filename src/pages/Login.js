@@ -1,7 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, signInWithEmailAndPassword } from "../firebaseConfig";
-import { CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, CForm, CFormInput, CButton } from "@coreui/react";
+import {
+  CContainer,
+  CRow,
+  CCol,
+  CCard,
+  CCardHeader,
+  CCardBody,
+  CForm,
+  CFormInput,
+  CButton,
+  CCardFooter,
+  CLink,
+  CCardText,
+} from "@coreui/react";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -37,13 +50,32 @@ const Login = ({ onLogin }) => {
             <CCardHeader className="text-center">Login</CCardHeader>
             <CCardBody>
               <CForm onSubmit={handleLogin}>
-                <CFormInput type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <CFormInput type="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <CFormInput
+                  type="email"
+                  label="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <CFormInput
+                  type="password"
+                  label="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
                 {error && <small className="text-danger">{error}</small>}
                 <CButton color="primary" type="submit" className="w-100 mt-3">
                   Login
                 </CButton>
               </CForm>
+              <CButton
+                color="secondary"
+                className="w-100 mt-2"
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </CButton>
             </CCardBody>
           </CCard>
         </CCol>

@@ -31,7 +31,6 @@ const Sidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated'); // Clear authentication state
     setIsAuthenticated(false);
-    navigate('/login'); // Redirect to login page
   };
 
   return (
@@ -50,8 +49,7 @@ const Sidebar = () => {
           <CNavItem href="/home">Under Working</CNavItem>
           <CNavItem href="/customers">Quotation</CNavItem>
         </CNavGroup>
-
-        <CNavItem href="/logout" onClick={handleLogout}>
+        <CNavItem href='/login'  onClick={handleLogout}>
           <CIcon customClassName="nav-icon" icon={cilExitToApp} /> Logout
         </CNavItem>
       </CSidebarNav>
