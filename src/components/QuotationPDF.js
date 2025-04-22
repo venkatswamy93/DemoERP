@@ -1,31 +1,93 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image, Path, Svg } from '@react-pdf/renderer';
+import '../../src/App.css';
 
 const logoBase64 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgNTAiPjx0ZXh0IHg9IjEwIiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSJibGFjayI+RGVtbyBJbnRlcmllb3JzPC90ZXh0Pjwvc3ZnPg==';
 const styles = StyleSheet.create({
-  pageWrapper: { padding: 10, border: '6px double #000', backgroundColor: '#FFFFFF' },
-  page: { padding: 30, fontFamily: 'Helvetica', border: '2px solid #555', backgroundColor: '#FAFAFA' },
-  header: { fontSize: 22, textAlign: 'center', marginBottom: 14, fontWeight: 'bold', color: '#B71C1C', textTransform: 'uppercase', borderBottom: '3px solid #222', paddingBottom: 6 },
-  sectionHeader: { fontSize: 14, marginTop: 14, marginBottom: 6, fontWeight: 'bold', color: '#D32F2F', textDecoration: 'underline', textTransform: 'uppercase' },
-  section: { fontSize: 12, marginBottom: 6, color: '#333' },
-  advantagesContainer: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  advantageBox: { flex: 1, padding: 8, border: '1px solid #555', textAlign: 'center', marginHorizontal: 4, fontWeight: 'bold' },
-  table: { display: 'table', width: '100%', border: '1 solid #555', marginTop: 12, backgroundColor: '#F4F4F4' },
-  tableRow: { flexDirection: 'row', borderBottom: '2px solid #777', backgroundColor: '#EAEAEA' },
-  tableCell: { flex: 1, padding: 8, fontSize: 10, borderRight: '1 solid #777', color: '#222', fontWeight: 'bold', textAlign: 'center' },
-  summaryTable: { marginTop: 20, width: '100%', border: '2px solid #222', backgroundColor: '#c7c1c1' },
-  summaryTableRow: { flexDirection: 'row', borderBottom: '1 solid #444' },
-  summaryTableCell: { padding: 6, fontSize: 12, flex: 1, textAlign: 'center', borderRight: '1 solid #444', fontWeight: 'bold', color: '#333' },
-  summaryTableRowHead: { flexDirection: 'row', borderBottom: '1 solid #444', backgroundColor: '#f07971' },
-  footer: { marginTop: 25, textAlign: 'center', fontSize: 10, borderTop: '2px solid #222', paddingTop: 10, color: '#555', fontWeight: 'bold' },
-  logo: { position: 'absolute', top: 15, left: 20, width: 70, height: 70 },
-  divider: { borderBottom: '2px dashed #888', marginVertical: 10 },
-  pieChartContainer: { display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30 },
-  pieText: { fontSize: 12, color: '#333', fontWeight: 'bold', textAlign: 'center' }
+  pageWrapper: { padding: 10, border: '6px double #E6A840', backgroundColor: '#FAF3E0' },
+  page: { padding: 30, fontFamily: 'Helvetica', border: '2px solid #E6A840', backgroundColor: '#FFFFFF' },
+
+  header: { 
+    fontSize: 22, textAlign: 'center', marginBottom: 14, fontWeight: 'bold',
+    color: '#D87A2D', textTransform: 'uppercase',
+    borderBottom: '3px solid #333', paddingBottom: 6
+  },
+
+  sectionHeader: {
+    fontSize: 14, marginTop: 14, marginBottom: 6, fontWeight: 'bold',
+    color: '#197278', textDecoration: 'underline', textTransform: 'uppercase'
+  },
+
+  section: { fontSize: 12, marginBottom: 6, color: '#444' },
+
+  advantagesContainer: {
+    display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 10
+  },
+
+  advantageBox: {
+    flex: 1, padding: 5, border: '1px solid #D87A2D',
+    textAlign: 'center', marginHorizontal: 4, fontWeight: 'bold',
+    color: '#333', backgroundColor: '#F7E9D7'
+  },
+
+  table: {
+    display: 'table', width: '100%', border: '1 solid #D87A2D', marginTop: 12,
+    backgroundColor: '#FAF3E0'
+  },
+
+  tableRow: {
+    flexDirection: 'row', borderBottom: '2px solid #E67E22', backgroundColor: '#FBE8D3'
+  },
+
+  tableCell: {
+    flex: 1, padding: 8, fontSize: 10, borderRight: '1 solid #E67E22',
+    color: '#333', fontWeight: 'bold', textAlign: 'center'
+  },
+
+  summaryTable: {
+    marginTop: 20, width: '100%', border: '2px solid #333', backgroundColor: '#F5F5F5'
+  },
+
+  summaryTableRow: {
+    flexDirection: 'row', borderBottom: '1 solid #777'
+  },
+
+  summaryTableCell: {
+    padding: 6, fontSize: 12, flex: 1, textAlign: 'center',
+    borderRight: '1 solid #777', fontWeight: 'bold', color: '#333'
+  },
+
+  summaryTableRowHead: {
+    flexDirection: 'row', borderBottom: '1 solid #777',
+    backgroundColor: '#D87A2D'
+  },
+
+  footer: {
+    marginTop: 25, textAlign: 'center', fontSize: 10,
+    borderTop: '2px solid #333', paddingTop: 10, color: '#555', fontWeight: 'bold'
+  },
+
+  logo: {
+    position: 'absolute', top: 15, left: 20, width: 70, height: 70
+  },
+
+  divider: { borderBottom: '2px dashed #999', marginVertical: 10 },
+
+  pieChartContainer: {
+    display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30
+  },
+
+  pieText: {
+    fontSize: 12, color: '#333', fontWeight: 'bold', textAlign: 'center'
+  }
 });
 
 const generatePieChartData = (rooms) => {
-  const colors = ['#FF5733', '#33FF57', '#3357FF', '#F4C724', '#8E44AD', '#2ECC71', '#E67E22', '#16A085'];
+  const colors = [
+    '#E67E22', '#1C758A', '#D87A2D', '#F4C724', 
+    '#8E44AD', '#2ECC71', '#F7E9D7', '#16A085'
+  ];
+  // pie chart data logic...
   const total = rooms.reduce((sum, room) => sum + room.totalPrice, 0);
   let cumulativeAngle = 0;
 
@@ -61,6 +123,7 @@ const createPieSlice = (startAngle, endAngle, color) => {
 
   return (
     <Path
+      id='cube'
       key={`${startAngle}-${endAngle}`}
       d={`M100,100 L${x1},${y1} A${radius},${radius} 0 ${largeArc},1 ${x2},${y2} Z`}
       fill={color}
@@ -87,24 +150,31 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
           <Text style={styles.section}>Email: {customer.email}</Text>
           
            {/* Additional Information */}
-           <Text style={styles.sectionHeader}>About Demo Interiors</Text>
-          <Text style={styles.section}>At Demo Interiors, our team of creative professionals ensures that designs are beautiful and functional.</Text>
-          <Text style={styles.section}>We are pioneers with an in-house production unit, utilizing automation technology and innovation.</Text>
-          <Text style={styles.section}>Our partnerships with quality brands like Hettich, Airolam/Stylam, etc., ensure best-in-class products.</Text>
-          <Text style={styles.section}>With over 2000+ exquisitely designed homes, we are one of the fastest-growing design firms in Bangalore.</Text>
-          <Text style={styles.section}>We take pride in our dedicated team, providing individual attention to all client needs, making every home a beautiful #demohome.</Text>
-          <Text style={styles.section}>Visit our website www.demo.com for completed projects; we are sure you’ll love our work like many of our customers!</Text>
-          
-          {/* Advantages Section */}
-          
-          
-          <Text style={styles.sectionHeader}>Demo Interiors Advantages</Text>
-          <View style={styles.advantagesContainer}>
-            <Text style={styles.advantageBox}>Unmatched Price</Text>
-            <Text style={styles.advantageBox}>Creativity & Quality</Text>
-            <Text style={styles.advantageBox}>Warranty</Text>
-            <Text style={styles.advantageBox}>45-60 Days of Execution</Text>
-          </View>
+           <Text style={styles.sectionHeader}>About MN Design Solutions Interiors</Text>
+<Text style={styles.section}>
+  At MN Design Solutions Interiors, we transform spaces into beautiful, functional homes tailored to your lifestyle. Our team of skilled designers and craftsmen combine creativity with practical expertise to deliver interiors that inspire.
+</Text>
+<Text style={styles.section}>
+  As industry pioneers with our own in-house production unit, we leverage cutting-edge technology, automation, and innovative techniques to ensure precision, quality, and timely project execution.
+</Text>
+<Text style={styles.section}>
+  We proudly collaborate with leading brands such as Hettich, Airolam, and Stylam to offer you the finest materials and finishes, delivering interiors that are both stylish and durable.
+</Text>
+<Text style={styles.section}>
+  What sets us apart is our personalized service — every client is assigned a dedicated team, ensuring complete attention to detail and seamless execution from concept to completion.
+</Text>
+<Text style={styles.section}>
+  Explore our completed projects at www.MNDesignSolutions.com and discover why hundreds of families trust us to design their dream homes.
+</Text>
+
+<Text style={styles.sectionHeader}>Why Choose MN Design Solutions Interiors?</Text>
+<View style={styles.advantagesContainer}>
+  <Text style={styles.advantageBox}>Unmatched Pricing & Value</Text>
+  <Text style={styles.advantageBox}>Creative, Bespoke Designs</Text>
+  <Text style={styles.advantageBox}>Assured 45-60 Day Project Completion</Text>
+  <Text style={styles.advantageBox}>Premium Brand Partnerships</Text>
+  <Text style={styles.advantageBox}>Dedicated Project Manager & Support Team</Text>
+</View>
         </View>
       </Page>
 
@@ -128,18 +198,35 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
               <Text style={styles.summaryTableCell}>Total</Text>
               <Text style={styles.summaryTableCell}>{Number(summary.total || 0).toLocaleString('en-IN')}</Text>
             </View>
-            <View style={styles.summaryTableRow}>
-              <Text style={styles.summaryTableCell}>Discount @ {summary.discountPercentage}%</Text>
-              <Text style={styles.summaryTableCell}>{Number(summary.discount || 0).toLocaleString('en-IN')}</Text>
-            </View>
-            <View style={styles.summaryTableRow}>
-              <Text style={styles.summaryTableCell}>Subtotal</Text>
-              <Text style={styles.summaryTableCell}>{Number(summary.subtotal || 0).toLocaleString('en-IN')}</Text>
-            </View>
-            <View style={styles.summaryTableRow}>
-              <Text style={styles.summaryTableCell}>GST @ {summary.gstPercentage}%</Text>
-              <Text style={styles.summaryTableCell}>{Number(summary.gst || 0).toLocaleString('en-IN')}</Text>
-            </View>
+            {(Number(summary.discount) !== 0 || Number(summary.gst) !== 0) && (
+  <>
+    <View style={styles.summaryTableRow}>
+      <Text style={styles.summaryTableCell}>
+        Discount @ {summary.discountPercentage}%
+      </Text>
+      <Text style={styles.summaryTableCell}>
+        {Number(summary.discount || 0).toLocaleString('en-IN')}
+      </Text>
+    </View>
+
+    <View style={styles.summaryTableRow}>
+      <Text style={styles.summaryTableCell}>Subtotal</Text>
+      <Text style={styles.summaryTableCell}>
+        {Number(summary.subtotal || 0).toLocaleString('en-IN')}
+      </Text>
+    </View>
+
+    <View style={styles.summaryTableRow}>
+      <Text style={styles.summaryTableCell}>
+        GST @ {summary.gstPercentage}%
+      </Text>
+      <Text style={styles.summaryTableCell}>
+        {Number(summary.gst || 0).toLocaleString('en-IN')}
+      </Text>
+    </View>
+  </>
+)}
+
             <View style={styles.summaryTableRow}>
               <Text style={styles.summaryTableCell}>Total Payable</Text>
               <Text style={styles.summaryTableCell}>{Number(summary.totalPayable || 0).toLocaleString('en-IN')}</Text>
@@ -202,7 +289,7 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
                   </Text>
                 </View>
               ))}
-            </View>
+            </View> 
           </View>
         </Page>
       ))}
@@ -217,20 +304,20 @@ const QuotationPDF = ({ customer, rooms, summary }) => {
           <Text style={styles.section}>3. 40% before furniture delivery.</Text>
           <Text style={styles.section}>4. Payments are non-refundable.</Text>
           <Text style={styles.section}>5. Minimum project value: 4,00,000 (Excluding GST).</Text>
-
+{/* 
           <Text style={styles.sectionHeader}>Note :</Text>
-          <Text style={styles.section}>1. Demo 10-Year's Warranty:</Text>
-          <Text style={styles.section}>a) All your woodwork is covered under the Demo 10-year warranty. This safeguards you against any defect in manufacturing or in installation workmanship.</Text>
-          <Text style={styles.section}>b) Please refer to Demo standard terms and conditions document for further details.</Text>
+          <Text style={styles.section}>1. MN Design Solutions 5-Year's Warranty (From Factory Team):</Text>
+          <Text style={styles.section}>a) All your woodwork is covered under the MN Design Solutions 10-year warranty. This safeguards you against any defect in manufacturing or in installation workmanship.</Text>
+          <Text style={styles.section}>b) Please refer to MN Design Solutions standard terms and conditions document for further details.</Text>
           <Text style={styles.section}>a) Bank transfers,</Text>
           <Text style={styles.section}>b) UPI and</Text>
-          <Text style={styles.section}>c) Cheque payments for 90% payment post the 10% Initial amount.</Text>
+          <Text style={styles.section}>c) Cheque payments for 90% payment post the 10% Initial amount.</Text> */}
 
-          <Text style={styles.sectionHeader}>Bank Details</Text>
-          <Text style={styles.section}>A/c Name: DEMO Design Solutions Pvt Ltd</Text>
+          {/* <Text style={styles.sectionHeader}>Bank Details</Text>
+          <Text style={styles.section}>A/c Name: MN Design Solutions Design Solutions Pvt Ltd</Text>
           <Text style={styles.section}>Bank: HDFC Bank</Text>
-          <Text style={styles.section}>A/c Type: Current Account</Text>
-          <Text style={styles.section}>UPI ID: DEMO@hdfcbank</Text>
+          <Text style={styles.section}>A/c Type: Current Account</Text> */}
+          {/* <Text style={styles.section}>UPI ID: MN Design Solutions@hdfcbank</Text> */}
 
           <Text style={styles.footer}>Thank you for choosing our services. We look forward to working with you!</Text>
         </View>

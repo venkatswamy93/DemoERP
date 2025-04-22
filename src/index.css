@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.cube {
+  transform: scaleX(1.1) scaleY(1.8) scaleZ(1.6) rotateX(137deg) rotateY(128deg) rotateZ(0deg) translateX(-22px) translateY(0px) translateZ(-51px) skewX(-16deg) skewY(-9deg);
+}
+.cube-wrap {
+  perspective: 1420px;
+  perspective-origin: 74% 65%;
+}

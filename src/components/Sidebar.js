@@ -13,11 +13,9 @@ import {
 
 import CIcon from '@coreui/icons-react';
 import { cilUser, cilSpeedometer, cilPuzzle, cilExitToApp } from '@coreui/icons';
-import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
 
   // Check authentication state from localStorage on component mount
   useEffect(() => {
