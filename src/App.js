@@ -7,28 +7,43 @@ import Home from './components/Home';
 import Customers from './components/Customers';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { app } from './firebase'; // Make sure your firebase.js exports initialized app
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const auth = getAuth(app);
 
-  // Check authentication state from localStorage on component mount
   useEffect(() => {
-    const storedAuth = localStorage.getItem('isAuthenticated');
-    if (storedAuth === 'true') {
-      setIsAuthenticated(true);
-    }
-  }, []);
+    // Listen for Firebase auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [auth]);
 
   // Function to handle login success
   const handleLogin = () => {
-    localStorage.setItem('isAuthenticated', 'true'); // Persist login
+    // Firebase handles auth state, no need to manually set localStorage
     setIsAuthenticated(true);
   };
 
   // Function to handle logout
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated'); // Clear authentication state
-    setIsAuthenticated(false);
+    signOut(auth)
+      .then(() => {
+        console.log('User signed out successfully');
+        setIsAuthenticated(false);
+      })
+      .catch((error) => {
+        console.error('Sign-out error:', error);
+      });
   };
 
   return (
@@ -46,7 +61,7 @@ function App() {
               <CContainer>
                 <CRow>
                   <CCol md={3}>
-                    <Sidebar onLogout={handleLogout} /> {/* Pass logout function */}
+                    <Sidebar onLogout={handleLogout} />
                   </CCol>
                   <CCol md={9} className="border m-5">
                     <Routes>
@@ -58,7 +73,7 @@ function App() {
                 </CRow>
               </CContainer>
             ) : (
-              <Navigate to="/login" /> // Redirect to login if not authenticated
+              <Navigate to="/login" replace />
             )
           }
         />
